@@ -14,6 +14,7 @@ It provides:
 - Geometry tracing (`minX`, `minY`, `width`, `height`, etc.)
 - Scroll geometry tracing (`contentOffset`, `visibleRect`, `contentSize`, etc.)
 - Scalar smoothness scoring for sampled traces (`MotionSmoothness`)
+- Scalar stillness validation for sampled traces (`MotionStillness`)
 - `Logger` output filterable by subsystem/category
 
 ## Installation
@@ -119,6 +120,19 @@ public enum MotionSmoothness {
         epsilon: Double = 0.0001
     ) -> MotionSmoothnessResult
 }
+
+public enum MotionStillness {
+    static func isStill(
+        _ values: [Double],
+        maximumMovement: Double = 0.2,
+        epsilon: Double = 0.0001
+    ) -> Bool
+
+    static func evaluate(
+        _ values: [Double],
+        epsilon: Double = 0.0001
+    ) -> MotionStillnessResult
+}
 ```
 
 Smoothness example:
@@ -129,6 +143,15 @@ XCTAssertTrue(MotionSmoothness.isSmooth(samples, minimumSmoothness: 0.9))
 ```
 
 `MotionSmoothness` is a discrete-value continuity heuristic. It is useful in tests for catching abrupt local jumps in traced values, but it does not prove real render-time frame pacing or GPU smoothness. It also intentionally does not reject direction changes or overshoot on its own, so backtracking should be asserted separately when that matters.
+
+Stillness example:
+
+```swift
+let samples = [240.0, 240.08, 239.97, 240.11]
+XCTAssertTrue(MotionStillness.isStill(samples))
+```
+
+`MotionStillness` checks that the full sampled trace stayed within a narrow band. The default `maximumMovement` is `0.2`, which works well for point-based geometry traces when you want "effectively did not move" semantics in tests.
 
 Note: On watchOS, the `Trace.geometry` defaults fall back to `space: .swiftUI(.global)` and `source: .layout` because screen/presentation geometry is unavailable.
 
