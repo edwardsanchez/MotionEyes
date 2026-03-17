@@ -1,6 +1,8 @@
 import OSLog
 
 public enum MotionTraceDefaults {
+    public typealias LogSink = (Logger, String) -> Void
+
     #if DEBUG
     public static let enabled = true
     #else
@@ -8,4 +10,5 @@ public enum MotionTraceDefaults {
     #endif
 
     public static let logger = Logger(subsystem: "MotionEyes", category: "Trace")
+    public nonisolated(unsafe) static var sink: LogSink?
 }

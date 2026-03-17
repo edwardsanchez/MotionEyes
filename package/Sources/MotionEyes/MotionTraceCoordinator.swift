@@ -39,7 +39,7 @@ final class MotionTraceCoordinator {
         self.engine = engine
         self.logger = logger
         let shouldUseInfoLogs = ProcessInfo.processInfo.arguments.contains("--motioneyes-info-logs")
-        self.sink = sink ?? { logger, message in
+        self.sink = sink ?? MotionTraceDefaults.sink ?? { logger, message in
             if shouldUseInfoLogs {
                 logger.info("\(message, privacy: .public)")
             } else {
