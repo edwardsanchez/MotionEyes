@@ -19,7 +19,8 @@
     "motion",
     "ios",
     "swift",
-    "xcodebuildmcp"
+    "xcode",
+    "rocketsim"
   ],
   "skills": [
     "./skill/motioneyes-animation-debug",

@@ -5,7 +5,7 @@ interface:
 dependencies:
   tools:
     - type: "mcp"
-      value: "xcodebuildmcp"
-      description: "Preferred simulator run and log-capture backend for this skill."
+      value: "xcode"
+      description: "Xcode's built-in project-aware build, run, debug, and console backend."
 policy:
   allow_implicit_invocation: true

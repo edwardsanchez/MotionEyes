@@ -87,7 +87,7 @@ By default, diff outputs are rendered for keyframe-related pairs only. Add `--al
 
 ### Tooling and Runtime Requirements
 
-MotionEyes works best alongside `XcodeBuildMCP` for simulator control and log capture, but it is not strictly required.
+MotionEyes works best alongside Xcode's built-in MCP server for project-aware build and console capture, with RocketSim for simulator interaction, but neither is strictly required.
 
 If MCP is unavailable, agents can still capture and read simulator logs directly:
 

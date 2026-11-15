@@ -1,6 +1,6 @@
 ---
 name: motioneyes-animation-debug
-description: Diagnose, fix, or validate SwiftUI animation and scroll behavior by temporarily instrumenting views with MotionEyes, capturing console traces over time, and comparing motion data to user intent or test expectations. Use when users report bugs such as wrong direction, premature fade, timing or easing mismatch, unexpected movement, missing movement, incorrect relative movement between views, scroll jumps, scroll restoration drift, content-offset desynchronization, or when they want to turn MotionEyes traces into focused assertions. Prefer XcodeBuildMCP log capture first and fallback to CLI log streaming; remove only agent-added MotionEyes instrumentation after validation.
+description: Diagnose, fix, or validate SwiftUI animation and scroll behavior by temporarily instrumenting views with MotionEyes, capturing console traces over time, and comparing motion data to user intent or test expectations. Use when users report bugs such as wrong direction, premature fade, timing or easing mismatch, unexpected movement, missing movement, incorrect relative movement between views, scroll jumps, scroll restoration drift, content-offset desynchronization, or when they want to turn MotionEyes traces into focused assertions. Prefer Xcode's built-in MCP server for project-aware runtime work, RocketSim for interaction, and CLI log streaming as a fallback; remove only agent-added MotionEyes instrumentation after validation.
 ---
 
 # MotionEyes Animation Debug
@@ -29,7 +29,7 @@ Follow these rules for every run:
 
 1. Confirm the complaint and expected behavior in measurable terms before instrumentation.
 2. Add only the minimum traces needed to test the complaint.
-3. Prefer XcodeBuildMCP for log capture; fall back to CLI log streaming if MCP is unavailable.
+3. Prefer Xcode's built-in MCP server for console capture; fall back to CLI log streaming when needed.
 4. Use semantic trace names that map directly to the user intent.
 5. Preserve all pre-existing MotionEyes instrumentation.
 6. Remove only agent-added MotionEyes imports, modifiers, and metrics after validation.
@@ -45,7 +45,7 @@ Follow this exact order:
 3. Ensure MotionEyes availability; if missing, auto-integrate the MotionEyes package into the app target before continuing.
 4. Add temporary `.motionTrace(...)` instrumentation with `Trace.value`, `Trace.geometry`, and (for scroll issues) `Trace.scrollGeometry` metrics named after user intent.
 5. Run the app and reproduce the issue.
-6. Capture logs with XcodeBuildMCP first; fall back to CLI log streaming if MCP is unavailable.
+6. Capture logs through Xcode first; fall back to CLI log streaming if direct console capture is unavailable.
 7. Analyze how values evolve over time versus expected behavior or extract a focused sample window for assertions.
 8. Implement a fix or add an assertion, rerun, and verify the motion now matches intent.
 9. Remove only agent-added MotionEyes imports, modifiers, and trace metrics from this run; never remove user-authored pre-existing MotionEyes code.
@@ -153,16 +153,9 @@ ScrollView {
 
 ## Log Capture
 
-Prefer XcodeBuildMCP:
+Prefer the `xcode` MCP server for project-aware build, run, and console capture. Use RocketSim to reproduce the animation in Simulator, refreshing its accessibility snapshot after navigation or layout changes.
 
-1. Call `mcp__XcodeBuildMCP__session_show_defaults`.
-2. Set missing defaults with `mcp__XcodeBuildMCP__session_set_defaults`.
-3. Build and run with `mcp__XcodeBuildMCP__build_run_sim` if needed.
-4. Start capture with `mcp__XcodeBuildMCP__start_sim_log_cap` using `captureConsole: true` and `subsystemFilter: "MotionEyes"`.
-5. Reproduce the animation.
-6. Stop capture with `mcp__XcodeBuildMCP__stop_sim_log_cap` and inspect returned logs.
-
-Fallback CLI if MCP is unavailable:
+Fallback CLI when direct console capture is unavailable:
 
 ```bash
 xcrun simctl spawn booted log stream \

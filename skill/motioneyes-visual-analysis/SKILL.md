@@ -83,7 +83,7 @@ Pair selection intent:
 
 ### Simulator (preferred)
 
-- Use XcodeBuildMCP to run the app and record video.
+- Use Xcode's built-in MCP server to run the app and RocketSim or `simctl` to capture the relevant visual sequence.
 - Record only the animation window you care about (for example, 1.0s).
 - For precise start timing, use the capture script with motion gating so frames only begin once pixels change.
 
