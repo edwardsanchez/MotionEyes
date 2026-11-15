@@ -20,3 +20,6 @@ xcuserdata/
 
 # SwiftPM local config
 Package.resolved
+
+# Generated Xcode build products are local-only.
+package/build/
